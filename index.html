@@ -3,51 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بيانات الشخص</title>
+    <title>تفاصيل الشخص</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             text-align: center;
-            padding: 20px;
+            margin: 50px;
         }
         .container {
-            background: white;
-            max-width: 400px;
-            margin: auto;
+            background: #f4f4f4;
             padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+            display: inline-block;
         }
-        h2 {
-            color: #333;
-        }
-        p {
-            font-size: 18px;
-            color: #555;
-            margin: 10px 0;
-            padding: 10px;
-            background: #e8f0fe;
-            border-radius: 5px;
+        img {
+            max-width: 200px;
+            border-radius: 10px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h2>📋 بيانات الشخص</h2>
-        <p id="name"></p>
-        <p id="age"></p>
-        <p id="phone"></p>
-        <p id="email"></p>
+        <h2>تفاصيل الشخص</h2>
+        <p><strong>الاسم:</strong> <span id="name">جارِ التحميل...</span></p>
+        <p><strong>العمر:</strong> <span id="age">جارِ التحميل...</span></p>
+        <p><strong>رقم الهاتف:</strong> <span id="phone">جارِ التحميل...</span></p>
+        <p><strong>البريد الإلكتروني:</strong> <span id="email">جارِ التحميل...</span></p>
+        <img id="profileImage" src="" alt="الصورة الشخصية" style="display:none;">
     </div>
 
     <script>
-        // استخراج البيانات من رابط الـ QR Code
-        const params = new URLSearchParams(window.location.search);
-        document.getElementById("name").innerHTML = "👤 الاسم: " + (params.get("name") || "غير متوفر");
-        document.getElementById("age").innerHTML = "🎂 العمر: " + (params.get("age") || "غير متوفر");
-        document.getElementById("phone").innerHTML = "📞 الهاتف: " + (params.get("phone") || "غير متوفر");
-        document.getElementById("email").innerHTML = "📧 البريد الإلكتروني: " + (params.get("email") || "غير متوفر");
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                name: params.get("name") || "غير متوفر",
+                age: params.get("age") || "غير متوفر",
+                phone: params.get("phone") || "غير متوفر",
+                email: params.get("email") || "غير متوفر",
+                image: params.get("image") || ""
+            };
+        }
+
+        // تحميل البيانات في الصفحة
+        window.onload = function () {
+            const data = getQueryParams();
+            document.getElementById("name").textContent = data.name;
+            document.getElementById("age").textContent = data.age;
+            document.getElementById("phone").textContent = data.phone;
+            document.getElementById("email").textContent = data.email;
+            
+            // إذا كان هناك صورة، عرضها
+            if (data.image) {
+                const imgElement = document.getElementById("profileImage");
+                imgElement.src = decodeURIComponent(data.image);
+                imgElement.style.display = "block";
+            }
+        };
     </script>
+
 </body>
 </html>
