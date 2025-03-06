@@ -87,40 +87,46 @@
         </div>
     </div>
 
-    <script>
-        function getQueryParams() {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                name: params.get("name") || "غير متوفر",
-                age: params.get("age") || "غير متوفر",
-                phone: params.get("phone") || "غير متوفر",
-                email: params.get("email") || "غير متوفر",
-                image: params.get("image") || ""
-            };
-        }
+   <script>
+    function getQueryParams() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            name: params.get("name") || "غير متوفر",
+            age: params.get("age") || "غير متوفر",
+            phone: params.get("phone") || "غير متوفر",
+            email: params.get("email") || "غير متوفر",
+            image: params.get("image") || ""
+        };
+    }
 
-        // تحميل البيانات في الصفحة
-        window.onload = function () {
-            const data = getQueryParams();
-            document.getElementById("name").textContent = data.name;
-            document.getElementById("age").textContent = data.age;
-            document.getElementById("phone").textContent = data.phone;
-            document.getElementById("email").textContent = data.email;
-            
-            // التعامل مع الصورة
-            const imgElement = document.getElementById("profileImage");
-            const noImageText = document.getElementById("noImageText");
+    // تحميل البيانات في الصفحة
+    window.onload = function () {
+        const data = getQueryParams();
+        document.getElementById("name").textContent = data.name;
+        document.getElementById("age").textContent = data.age;
+        document.getElementById("phone").textContent = data.phone;
+        document.getElementById("email").textContent = data.email;
+        
+        // التعامل مع الصورة
+        const imgElement = document.getElementById("profileImage");
+        const noImageText = document.getElementById("noImageText");
 
-            if (data.image && data.image.startsWith("http")) {
-                imgElement.src = decodeURIComponent(data.image);
-                imgElement.style.display = "block";
-                noImageText.style.display = "none";
-            } else {
+        if (data.image && data.image.startsWith("http")) {
+            imgElement.src = decodeURIComponent(data.image);
+            imgElement.style.display = "block";
+            noImageText.style.display = "none";
+
+            // ✅ التحقق مما إذا كان الرابط صالحًا
+            imgElement.onerror = function () {
                 imgElement.style.display = "none";
                 noImageText.style.display = "block";
-            }
-        };
-    </script>
+            };
+        } else {
+            imgElement.style.display = "none";
+            noImageText.style.display = "block";
+        }
+    };
+</script>
 
 </body>
 </html>
