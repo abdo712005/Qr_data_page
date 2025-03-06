@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تفاصيل الشخص</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* تنسيق عام للصفحة */
         body {
@@ -16,6 +17,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            padding: 15px;
         }
 
         /* الحاوية الرئيسية */
@@ -27,13 +29,19 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
             width: 90%;
             max-width: 400px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .container:hover {
+            transform: scale(1.02);
         }
 
         /* تنسيق العنوان */
         h2 {
             margin-bottom: 15px;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: bold;
+            color: #ffeb3b;
         }
 
         /* تنسيق المعلومات */
@@ -42,7 +50,6 @@
             margin: 10px 0;
         }
 
-        /* تنسيق النصوص البارزة */
         strong {
             color: #ffeb3b;
         }
@@ -57,18 +64,20 @@
         }
 
         .profile-container img {
-            max-width: 120px;
+            width: 120px;
             height: 120px;
             border-radius: 50%;
             border: 3px solid #ffeb3b;
-            display: none; /* الصورة مخفية حتى يتم تحميلها */
+            display: none; /* سيتم إظهارها بعد التحميل */
             object-fit: cover;
+            transition: opacity 0.5s ease-in-out;
         }
 
         /* نص في حالة عدم وجود صورة */
         .no-image {
             font-size: 14px;
             color: #ddd;
+            font-style: italic;
         }
     </style>
 </head>
@@ -99,24 +108,30 @@
         };
     }
 
-    // تحميل البيانات في الصفحة
     window.onload = function () {
         const data = getQueryParams();
         document.getElementById("name").textContent = data.name;
         document.getElementById("age").textContent = data.age;
         document.getElementById("phone").textContent = data.phone;
         document.getElementById("email").textContent = data.email;
-        
-        // التعامل مع الصورة
+
         const imgElement = document.getElementById("profileImage");
         const noImageText = document.getElementById("noImageText");
 
         if (data.image && data.image.startsWith("http")) {
-            imgElement.src = decodeURIComponent(data.image);
+            let imageUrl = decodeURIComponent(data.image);
+
+            // ✅ إصلاح مشاكل الروابط عند استخدام &amp;
+            if (imageUrl.includes("&amp;")) {
+                imageUrl = imageUrl.replace(/&amp;/g, "&");
+            }
+
+            imgElement.src = imageUrl;
             imgElement.style.display = "block";
+            imgElement.style.opacity = "1";
             noImageText.style.display = "none";
 
-            // ✅ التحقق مما إذا كان الرابط صالحًا
+            // ✅ التحقق مما إذا كان الرابط صحيحًا
             imgElement.onerror = function () {
                 imgElement.style.display = "none";
                 noImageText.style.display = "block";
