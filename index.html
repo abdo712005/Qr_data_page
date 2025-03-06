@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بيانات الشخص</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+            color: #555;
+            margin: 10px 0;
+            padding: 10px;
+            background: #e8f0fe;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📋 بيانات الشخص</h2>
+        <p id="name"></p>
+        <p id="age"></p>
+        <p id="phone"></p>
+        <p id="email"></p>
+    </div>
+
+    <script>
+        // استخراج البيانات من رابط الـ QR Code
+        const params = new URLSearchParams(window.location.search);
+        document.getElementById("name").innerHTML = "👤 الاسم: " + (params.get("name") || "غير متوفر");
+        document.getElementById("age").innerHTML = "🎂 العمر: " + (params.get("age") || "غير متوفر");
+        document.getElementById("phone").innerHTML = "📞 الهاتف: " + (params.get("phone") || "غير متوفر");
+        document.getElementById("email").innerHTML = "📧 البريد الإلكتروني: " + (params.get("email") || "غير متوفر");
+    </script>
+</body>
+</html>
