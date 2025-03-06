@@ -5,21 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تفاصيل الشخص</title>
     <style>
+        /* تنسيق عام للصفحة */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
             text-align: center;
-            margin: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
+
+        /* الحاوية الرئيسية */
         .container {
-            background: #f4f4f4;
-            padding: 20px;
-            border-radius: 10px;
-            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
         }
-        img {
-            max-width: 200px;
-            border-radius: 10px;
-            margin-top: 10px;
+
+        /* تنسيق العنوان */
+        h2 {
+            margin-bottom: 15px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        /* تنسيق المعلومات */
+        p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        /* تنسيق النصوص البارزة */
+        strong {
+            color: #ffeb3b;
+        }
+
+        /* تنسيق الصورة */
+        .profile-container {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .profile-container img {
+            max-width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #ffeb3b;
+            display: none; /* الصورة مخفية حتى يتم تحميلها */
+            object-fit: cover;
+        }
+
+        /* نص في حالة عدم وجود صورة */
+        .no-image {
+            font-size: 14px;
+            color: #ddd;
         }
     </style>
 </head>
@@ -31,7 +80,11 @@
         <p><strong>العمر:</strong> <span id="age">جارِ التحميل...</span></p>
         <p><strong>رقم الهاتف:</strong> <span id="phone">جارِ التحميل...</span></p>
         <p><strong>البريد الإلكتروني:</strong> <span id="email">جارِ التحميل...</span></p>
-        <img id="profileImage" src="" alt="الصورة الشخصية" style="display:none;">
+
+        <div class="profile-container">
+            <img id="profileImage" src="" alt="الصورة الشخصية">
+            <p id="noImageText" class="no-image">لا توجد صورة متاحة</p>
+        </div>
     </div>
 
     <script>
@@ -54,11 +107,17 @@
             document.getElementById("phone").textContent = data.phone;
             document.getElementById("email").textContent = data.email;
             
-            // إذا كان هناك صورة، عرضها
-            if (data.image) {
-                const imgElement = document.getElementById("profileImage");
+            // التعامل مع الصورة
+            const imgElement = document.getElementById("profileImage");
+            const noImageText = document.getElementById("noImageText");
+
+            if (data.image && data.image.startsWith("http")) {
                 imgElement.src = decodeURIComponent(data.image);
                 imgElement.style.display = "block";
+                noImageText.style.display = "none";
+            } else {
+                imgElement.style.display = "none";
+                noImageText.style.display = "block";
             }
         };
     </script>
