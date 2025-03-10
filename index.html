@@ -56,36 +56,24 @@
             color: #ffcc00;
         }
 
-        /* تنسيق الصورة */
-        .profile-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+        /* تنسيق الروابط */
+        a {
+            color: #ffcc00;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
         }
 
-        .profile-container img {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            border: 4px solid #ffcc00;
-            display: none; /* سيتم إظهارها بعد التحميل */
-            object-fit: cover;
-            transition: opacity 0.5s ease-in-out, transform 0.3s ease-in-out;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        a:hover {
+            color: #fff;
+            text-decoration: underline;
         }
 
-        .profile-container img:hover {
-            transform: scale(1.05);
-        }
-
-        /* نص في حالة عدم وجود صورة */
-        .no-image {
+        /* نص في حالة عدم وجود رابط */
+        .no-link {
             font-size: 16px;
             color: #ddd;
             font-style: italic;
-            margin-top: 10px;
         }
     </style>
 </head>
@@ -95,61 +83,40 @@
         <h2>تفاصيل الشخص</h2>
         <p><strong>رقم التعريف (ID):</strong> <span id="id">جارِ التحميل...</span></p>
         <p><strong>الاسم:</strong> <span id="name">جارِ التحميل...</span></p>
-        <p><strong>العمر:</strong> <span id="age">جارِ التحميل...</span></p>
         <p><strong>رقم الهاتف:</strong> <span id="phone">جارِ التحميل...</span></p>
         <p><strong>البريد الإلكتروني:</strong> <span id="email">جارِ التحميل...</span></p>
-
-        <div class="profile-container">
-            <img id="profileImage" src="" alt="الصورة الشخصية">
-            <p id="noImageText" class="no-image">لا توجد صورة متاحة</p>
-        </div>
+        <p><strong>شهادة الميلاد:</strong> <span id="birthCert">جارِ التحميل...</span></p>
     </div>
 
     <script>
     function getQueryParams() {
         const params = new URLSearchParams(window.location.search);
         return {
-            id: params.get("id") || "غير متوفر", // إضافة الـ ID
+            id: params.get("id") || "غير متوفر",
             name: params.get("name") || "غير متوفر",
-            age: params.get("age") || "غير متوفر",
             phone: params.get("phone") || "غير متوفر",
             email: params.get("email") || "غير متوفر",
-            image: params.get("image") || ""
+            birthCert: params.get("birthCert") || ""
         };
     }
 
     window.onload = function () {
         const data = getQueryParams();
-        document.getElementById("id").textContent = data.id; // عرض الـ ID
+
+        // عرض البيانات في الصفحة
+        document.getElementById("id").textContent = data.id;
         document.getElementById("name").textContent = data.name;
-        document.getElementById("age").textContent = data.age;
         document.getElementById("phone").textContent = data.phone;
         document.getElementById("email").textContent = data.email;
 
-        const imgElement = document.getElementById("profileImage");
-        const noImageText = document.getElementById("noImageText");
-
-        if (data.image && data.image.startsWith("http")) {
-            let imageUrl = decodeURIComponent(data.image);
-
-            // ✅ إصلاح مشاكل الروابط عند استخدام &
-            if (imageUrl.includes("&")) {
-                imageUrl = imageUrl.replace(/&/g, "&");
-            }
-
-            imgElement.src = imageUrl;
-            imgElement.style.display = "block";
-            imgElement.style.opacity = "1";
-            noImageText.style.display = "none";
-
-            // ✅ التحقق مما إذا كان الرابط صحيحًا
-            imgElement.onerror = function () {
-                imgElement.style.display = "none";
-                noImageText.style.display = "block";
-            };
+        // عرض رابط شهادة الميلاد
+        const birthCertElement = document.getElementById("birthCert");
+        if (data.birthCert && data.birthCert.startsWith("http")) {
+            let birthCertUrl = decodeURIComponent(data.birthCert);
+            birthCertElement.innerHTML = `<a href="${birthCertUrl}" target="_blank">عرض الملف</a>`;
         } else {
-            imgElement.style.display = "none";
-            noImageText.style.display = "block";
+            birthCertElement.textContent = "غير متوفر";
+            birthCertElement.classList.add("no-link");
         }
     };
     </script>
