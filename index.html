@@ -93,6 +93,7 @@
 
     <div class="container">
         <h2>تفاصيل الشخص</h2>
+        <p><strong>رقم التعريف (ID):</strong> <span id="id">جارِ التحميل...</span></p>
         <p><strong>الاسم:</strong> <span id="name">جارِ التحميل...</span></p>
         <p><strong>العمر:</strong> <span id="age">جارِ التحميل...</span></p>
         <p><strong>رقم الهاتف:</strong> <span id="phone">جارِ التحميل...</span></p>
@@ -104,10 +105,11 @@
         </div>
     </div>
 
-   <script>
+    <script>
     function getQueryParams() {
         const params = new URLSearchParams(window.location.search);
         return {
+            id: params.get("id") || "غير متوفر", // إضافة الـ ID
             name: params.get("name") || "غير متوفر",
             age: params.get("age") || "غير متوفر",
             phone: params.get("phone") || "غير متوفر",
@@ -118,6 +120,7 @@
 
     window.onload = function () {
         const data = getQueryParams();
+        document.getElementById("id").textContent = data.id; // عرض الـ ID
         document.getElementById("name").textContent = data.name;
         document.getElementById("age").textContent = data.age;
         document.getElementById("phone").textContent = data.phone;
@@ -129,9 +132,9 @@
         if (data.image && data.image.startsWith("http")) {
             let imageUrl = decodeURIComponent(data.image);
 
-            // ✅ إصلاح مشاكل الروابط عند استخدام &amp;
-            if (imageUrl.includes("&amp;")) {
-                imageUrl = imageUrl.replace(/&amp;/g, "&");
+            // ✅ إصلاح مشاكل الروابط عند استخدام &
+            if (imageUrl.includes("&")) {
+                imageUrl = imageUrl.replace(/&/g, "&");
             }
 
             imgElement.src = imageUrl;
@@ -149,7 +152,6 @@
             noImageText.style.display = "block";
         }
     };
-</script>
-
+    </script>
 </body>
 </html>
