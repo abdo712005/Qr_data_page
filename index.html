@@ -81,6 +81,19 @@
             transform: scale(1.05);
         }
 
+        /* تنسيق الرابط البديل */
+        a {
+            color: #ffcc00;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
         /* نص في حالة عدم وجود صورة */
         .no-image {
             font-size: 16px;
@@ -126,27 +139,29 @@
         document.getElementById("phone").textContent = data.phone;
         document.getElementById("email").textContent = data.email;
 
-        // عرض صورة البطاقة
+        // عرض صورة البطاقة أو رابط بديل
         const imgElement = document.getElementById("idCardImage");
         const noImageText = document.getElementById("noImageText");
 
         if (data.birthCert && data.birthCert.startsWith("http")) {
             let imageUrl = decodeURIComponent(data.birthCert);
 
-            // التأكد من أن الرابط يعمل كصورة مباشرة
+            // حاول تحميل الصورة
             imgElement.src = imageUrl;
             imgElement.style.display = "block";
             imgElement.style.opacity = "1";
             noImageText.style.display = "none";
 
-            // التحقق مما إذا كان الرابط غير صحيح أو لا يمكن تحميله
+            // لو الصورة ما اتحملتش، اعرض رابط بديل
             imgElement.onerror = function () {
                 imgElement.style.display = "none";
                 noImageText.style.display = "block";
+                noImageText.innerHTML = `<a href="${imageUrl}" target="_blank">عرض الملف</a>`;
             };
         } else {
             imgElement.style.display = "none";
             noImageText.style.display = "block";
+            noImageText.textContent = "لا توجد صورة متاحة";
         }
     };
     </script>
