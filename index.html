@@ -56,24 +56,37 @@
             color: #ffcc00;
         }
 
-        /* تنسيق الروابط */
-        a {
-            color: #ffcc00;
-            text-decoration: none;
-            font-size: 16px;
-            transition: color 0.3s ease;
+        /* تنسيق الصورة */
+        .id-card-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
 
-        a:hover {
-            color: #fff;
-            text-decoration: underline;
+        .id-card-container img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 10px;
+            border: 3px solid #ffcc00;
+            display: none; /* سيتم إظهارها بعد التحميل */
+            object-fit: cover;
+            transition: opacity 0.5s ease-in-out, transform 0.3s ease-in-out;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
-        /* نص في حالة عدم وجود رابط */
-        .no-link {
+        .id-card-container img:hover {
+            transform: scale(1.05);
+        }
+
+        /* نص في حالة عدم وجود صورة */
+        .no-image {
             font-size: 16px;
             color: #ddd;
             font-style: italic;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -85,7 +98,11 @@
         <p><strong>الاسم:</strong> <span id="name">جارِ التحميل...</span></p>
         <p><strong>رقم الهاتف:</strong> <span id="phone">جارِ التحميل...</span></p>
         <p><strong>البريد الإلكتروني:</strong> <span id="email">جارِ التحميل...</span></p>
-        <p><strong>شهادة الميلاد:</strong> <span id="birthCert">جارِ التحميل...</span></p>
+
+        <div class="id-card-container">
+            <img id="idCardImage" src="" alt="صورة البطاقة">
+            <p id="noImageText" class="no-image">لا توجد صورة متاحة</p>
+        </div>
     </div>
 
     <script>
@@ -109,14 +126,27 @@
         document.getElementById("phone").textContent = data.phone;
         document.getElementById("email").textContent = data.email;
 
-        // عرض رابط شهادة الميلاد
-        const birthCertElement = document.getElementById("birthCert");
+        // عرض صورة البطاقة
+        const imgElement = document.getElementById("idCardImage");
+        const noImageText = document.getElementById("noImageText");
+
         if (data.birthCert && data.birthCert.startsWith("http")) {
-            let birthCertUrl = decodeURIComponent(data.birthCert);
-            birthCertElement.innerHTML = `<a href="${birthCertUrl}" target="_blank">عرض الملف</a>`;
+            let imageUrl = decodeURIComponent(data.birthCert);
+
+            // التأكد من أن الرابط يعمل كصورة مباشرة
+            imgElement.src = imageUrl;
+            imgElement.style.display = "block";
+            imgElement.style.opacity = "1";
+            noImageText.style.display = "none";
+
+            // التحقق مما إذا كان الرابط غير صحيح أو لا يمكن تحميله
+            imgElement.onerror = function () {
+                imgElement.style.display = "none";
+                noImageText.style.display = "block";
+            };
         } else {
-            birthCertElement.textContent = "غير متوفر";
-            birthCertElement.classList.add("no-link");
+            imgElement.style.display = "none";
+            noImageText.style.display = "block";
         }
     };
     </script>
