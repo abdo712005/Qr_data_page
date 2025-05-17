@@ -6,7 +6,6 @@
     <title>تفاصيل الشخص</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* تنسيق عام للصفحة */
         body {
             font-family: 'Tajawal', sans-serif;
             background: linear-gradient(135deg, #232526, #414345);
@@ -20,7 +19,6 @@
             padding: 15px;
         }
 
-        /* الحاوية الرئيسية */
         .container {
             background: rgba(255, 255, 255, 0.15);
             padding: 30px;
@@ -37,7 +35,6 @@
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
         }
 
-        /* تنسيق العنوان */
         h2 {
             margin-bottom: 15px;
             font-size: 26px;
@@ -45,7 +42,6 @@
             color: #ffcc00;
         }
 
-        /* تنسيق المعلومات */
         p {
             font-size: 18px;
             margin: 8px 0;
@@ -56,7 +52,6 @@
             color: #ffcc00;
         }
 
-        /* تنسيق الصورة */
         .id-card-container {
             margin-top: 20px;
             display: flex;
@@ -71,7 +66,7 @@
             height: auto;
             border-radius: 10px;
             border: 3px solid #ffcc00;
-            display: none; /* سيتم إظهارها بعد التحميل */
+            display: none;
             object-fit: cover;
             transition: opacity 0.5s ease-in-out, transform 0.3s ease-in-out;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -81,7 +76,6 @@
             transform: scale(1.05);
         }
 
-        /* تنسيق الرابط البديل */
         a {
             color: #ffcc00;
             text-decoration: none;
@@ -94,76 +88,113 @@
             text-decoration: underline;
         }
 
-        /* نص في حالة عدم وجود صورة */
         .no-image {
             font-size: 16px;
             color: #ddd;
             font-style: italic;
             margin-top: 10px;
         }
+
+        .error-message {
+            font-size: 18px;
+            color: #ff4444;
+            font-weight: bold;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-
     <div class="container">
         <h2>تفاصيل الشخص</h2>
-        <p><strong>رقم التعريف (ID):</strong> <span id="id">جارِ التحميل...</span></p>
-        <p><strong>الاسم:</strong> <span id="name">جارِ التحميل...</span></p>
-        <p><strong>رقم الهاتف:</strong> <span id="phone">جارِ التحميل...</span></p>
-        <p><strong>البريد الإلكتروني:</strong> <span id="email">جارِ التحميل...</span></p>
-
-        <div class="id-card-container">
-            <img id="idCardImage" src="" alt="صورة البطاقة">
-            <p id="noImageText" class="no-image">لا توجد صورة متاحة</p>
+        <div id="content" style="display: none;">
+            <p><strong>رقم التعريف (ID):</strong> <span id="id">جارِ التحميل...</span></p>
+            <p><strong>الاسم:</strong> <span id="name">جارِ التحميل...</span></p>
+            <p><strong>رقم الهاتف:</strong> <span id="phone">جارِ التحميل...</span></p>
+            <p><strong>البريد الإلكتروني:</strong> <span id="email">جارِ التحميل...</span></p>
+            <div class="id-card-container">
+                <img id="idCardImage" src="" alt="صورة البطاقة">
+                <p id="noImageText" class="no-image">لا توجد صورة متاحة</p>
+            </div>
         </div>
+        <div id="error" class="error-message"></div>
     </div>
 
     <script>
-    function getQueryParams() {
-        const params = new URLSearchParams(window.location.search);
-        return {
-            id: params.get("id") || "غير متوفر",
-            name: params.get("name") || "غير متوفر",
-            phone: params.get("phone") || "غير متوفر",
-            email: params.get("email") || "غير متوفر",
-            birthCert: params.get("birthCert") || ""
-        };
-    }
-
-    window.onload = function () {
-        const data = getQueryParams();
-
-        // عرض البيانات في الصفحة
-        document.getElementById("id").textContent = data.id;
-        document.getElementById("name").textContent = data.name;
-        document.getElementById("phone").textContent = data.phone;
-        document.getElementById("email").textContent = data.email;
-
-        // عرض صورة البطاقة أو رابط بديل
-        const imgElement = document.getElementById("idCardImage");
-        const noImageText = document.getElementById("noImageText");
-
-        if (data.birthCert && data.birthCert.startsWith("http")) {
-            let imageUrl = decodeURIComponent(data.birthCert);
-
-            // حاول تحميل الصورة
-            imgElement.src = imageUrl;
-            imgElement.style.display = "block";
-            imgElement.style.opacity = "1";
-            noImageText.style.display = "none";
-
-            // لو الصورة ما اتحملتش، اعرض رابط بديل
-            imgElement.onerror = function () {
-                imgElement.style.display = "none";
-                noImageText.style.display = "block";
-                noImageText.innerHTML = `<a href="${imageUrl}" target="_blank">عرض الملف</a>`;
+        // استخراج البيانات من الـ URL
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                id: params.get("id") || "غير متوفر",
+                name: params.get("name") || "غير متوفر",
+                phone: params.get("phone") || "غير متوفر",
+                email: params.get("email") || "غير متوفر",
+                birthCert: params.get("birthCert") || ""
             };
-        } else {
-            imgElement.style.display = "none";
-            noImageText.style.display = "block";
-            noImageText.textContent = "لا توجد صورة متاحة";
         }
-    };
+
+        window.onload = function () {
+            const data = getQueryParams();
+            const webAppUrl = "https://script.google.com/macros/s/AKfycbyv8G9tteV8kM2N2TW1phEyzzqsdRXsIBN3_EDd-xSsYNtzMZ6btEpnI1hEgZT73l6I/exec";
+
+            // إخفاء المحتوى لحين التحقق
+            const contentDiv = document.getElementById("content");
+            const errorDiv = document.getElementById("error");
+
+            // التحقق من حالة الـ QR Code
+            if (data.id && data.id !== "غير متوفر") {
+                fetch(`${webAppUrl}?id=${data.id}`)
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status === "success") {
+                            // عرض البيانات
+                            contentDiv.style.display = "block";
+                            errorDiv.style.display = "none";
+
+                            document.getElementById("id").textContent = data.id;
+                            document.getElementById("name").textContent = decodeURIComponent(data.name);
+                            document.getElementById("phone").textContent = decodeURIComponent(data.phone);
+                            document.getElementById("email").textContent = decodeURIComponent(data.email);
+
+                            // عرض صورة البطاقة أو رابط بديل
+                            const imgElement = document.getElementById("idCardImage");
+                            const noImageText = document.getElementById("noImageText");
+
+                            if (data.birthCert && data.birthCert.startsWith("http")) {
+                                let imageUrl = decodeURIComponent(data.birthCert);
+                                imgElement.src = imageUrl;
+                                imgElement.style.display = "block";
+                                imgElement.style.opacity = "1";
+                                noImageText.style.display = "none";
+
+                                imgElement.onerror = function () {
+                                    imgElement.style.display = "none";
+                                    noImageText.style.display = "block";
+                                    noImageText.innerHTML = `<a href="${imageUrl}" target="_blank">عرض الملف</a>`;
+                                };
+                            } else {
+                                imgElement.style.display = "none";
+                                noImageText.style.display = "block";
+                                noImageText.textContent = "لا توجد صورة متاحة";
+                            }
+                        } else {
+                            // عرض رسالة الخطأ
+                            contentDiv.style.display = "none";
+                            errorDiv.style.display = "block";
+                            errorDiv.textContent = result.message;
+                        }
+                    })
+                    .catch(error => {
+                        contentDiv.style.display = "none";
+                        errorDiv.style.display = "block";
+                        errorDiv.textContent = "خطأ في الاتصال بالخادم";
+                        console.error("Error:", error);
+                    });
+            } else {
+                contentDiv.style.display = "none";
+                errorDiv.style.display = "block";
+                errorDiv.textContent = "رقم التعريف غير موجود";
+            }
+        };
     </script>
 </body>
 </html>
